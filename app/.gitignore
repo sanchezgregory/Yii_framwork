@@ -8,6 +8,7 @@ nbproject
 .buildpath
 .project
 .settings
+.idea/
 
 # windows thumbnail cache
 Thumbs.db
