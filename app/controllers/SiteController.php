@@ -61,7 +61,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        //return $this->render('index');
+        return $this->redirect(['libro/list']);
     }
 
     /**
@@ -129,5 +130,18 @@ class SiteController extends Controller
     public function actionTest($message = 'Hola')
     {
         return $this->render('test', ['message'=>$message]);
+    }
+
+    public function actionSignup()
+    {
+        $model = new \app\models\SignupForm();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            Yii::$app->session->setFlash('success', 'Registrado correctamente.');
+            return $this->goHome();
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
     }
 }
