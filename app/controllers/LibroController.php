@@ -4,10 +4,11 @@ namespace app\controllers;
 
 use app\models\Libro;
 use app\models\LibroSearch;
+use yii\data\Pagination;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
 use yii\web\UploadedFile;
 
 /**
@@ -23,6 +24,15 @@ class LibroController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['@']
+                        ]
+                    ]
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -162,5 +172,18 @@ class LibroController extends Controller
         } else {
             $model->loadDefaultValues();
         }
+    }
+
+    public function actionList()
+    {
+        $model = Libro::find();
+        $pagination = new Pagination([
+            'defaultPageSize'=>4,
+            'totalCount' => $model->count()
+        ]);
+
+        $books = $model->orderBy('titulo')->offset($pagination->offset)->limit($pagination->limit)->all();
+
+        return $this->render('lista', ['books' => $books, 'paginacion' => $pagination]);
     }
 }
